@@ -3,11 +3,12 @@ from ..core import FlowGroup
 
 
 class FlowArray(FlowGroup):
-    def __init__(self, elements: list, direction=RIGHT):
+    def __init__(self, elements: list, direction=RIGHT, extend_scope=1):
         """
         Initializes the FlowArray with virtual edge nodes and animatable content.
         """
         super().__init__()
+        self.extend_scope = extend_scope
         self.direction = direction
         self.elements = elements
         self.squares, self.labels = [], []
@@ -35,13 +36,16 @@ class FlowArray(FlowGroup):
         Constructs the full visual array with edge nodes and arranges them.
         """
         self.logger.log(f"Direction: {self.direction}")
-        self._add_element(-1, True)  # Left edge
+
+        for _ in range(self.extend_scope):
+            self._add_element(-1, True)  # Left edge
 
         for i, elem in enumerate(self.elements):
             self.logger.log(f"Inserting: arr[{i}] = {elem}")
             self._add_element(elem)
 
-        self._add_element(-1, True)  # Right edge
+        for _ in range(self.extend_scope):
+            self._add_element(-1, True)  # Right edge
 
         self.arrange(self.direction, buff=0.1)
         self.move_to(ORIGIN)
@@ -54,17 +58,12 @@ class FlowArray(FlowGroup):
             raise IndexError("Index out of range for update()")
         self.logger.log(f"Updating: arr[{index}] = {new_value}")
 
-        old_label = self.labels[index]
+        old_label = self.labels[index + self.extend_scope]
         new_label = Tex(str(new_value)).move_to(old_label.get_center())
 
         # Update internal state
-        self.labels[index] = new_label
+        self.labels[index + self.extend_scope] = new_label
         self.elements[index] = new_value
-
-        # Replace label in the submobject group (box + label)
-        group = self.submobjects[index + 1]  # offset for left virtual
-        group.remove(old_label)
-        group.add(new_label)
 
         return AnimationGroup(Transform(old_label, new_label))
 
@@ -74,8 +73,8 @@ class FlowArray(FlowGroup):
         """
         self.logger.log(f"Swapping: arr[{i}] <-> arr[{j}]")
 
-        i += 1  # Offset for left virtual node
-        j += 1  # Offset for right virtual node
+        i += self.extend_scope
+        j += self.extend_scope
 
         label_i, label_j = self.labels[i], self.labels[j]
         pos_i, pos_j = self.squares[i].get_center(), self.squares[j].get_center()
@@ -84,12 +83,13 @@ class FlowArray(FlowGroup):
         anim_i = MoveAlongPath(label_i, ArcBetweenPoints(pos_i, pos_j, angle=-PI / 2))
         anim_j = MoveAlongPath(label_j, ArcBetweenPoints(pos_j, pos_i, angle=-PI / 2))
 
-        # Swap internal state
         self.labels[i], self.labels[j] = label_j, label_i
-        self.elements[i - 1], self.elements[j - 1] = (
-            self.elements[j - 1],
-            self.elements[i - 1],
-        )
+
+        i -= self.extend_scope
+        j -= self.extend_scope
+
+        # Swap internal state
+        self.elements[i], self.elements[j] = (self.elements[j], self.elements[i])
 
         return AnimationGroup(anim_i, anim_j)
 
@@ -113,10 +113,10 @@ class FlowArray(FlowGroup):
         """
         Allows iteration over real visual array (excludes virtual edges).
         """
-        return iter(self.submobjects[1:-1])
+        return iter(self.submobjects[self.extend_scope : -self.extend_scope])
 
     def __getitem__(self, index: int):
         """
         Enables array-style access to logical values.
         """
-        return self.squares[index + 1]
+        return self.squares[index + self.extend_scope]

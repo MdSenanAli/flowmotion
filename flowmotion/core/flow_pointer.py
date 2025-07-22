@@ -18,14 +18,19 @@ class FlowPointer(FlowGroup):
 
         self.move_to(ORIGIN)
 
-    def place(self, mobject: Mobject):
+    def place(self, mobject: Mobject, buff=0.2):
         """
         Move the pointer to point to a specific mobject.
         """
-        target_pos = mobject.get_edge_center(-self.direction)
+        target_pos = (
+            mobject.get_edge_center(-self.direction) - normalize(self.direction) * buff
+        )
         pointer_pos = self.arrow.get_end()
         shift_vector = target_pos - pointer_pos
-        return self.shift(shift_vector).shift(-normalize(self.direction) * 0.2)
+        self.logger.log(
+            f"Shifting: {np.round(pointer_pos,1)} -> {np.round(target_pos,1)}"
+        )
+        return self.shift(shift_vector)
 
     def point_to(self, mobject: Mobject):
         """
