@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+*.log
+
+# VSCode or JetBrains
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Manim cache
+media/
+manim.cfg
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Virtual envs
+.env
+.venv
+env/
+venv/
+
+# PyInstaller
+dist/
+build/
+
+# Misc
+*.swp
