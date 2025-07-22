@@ -86,7 +86,10 @@ class FlowArray(FlowGroup):
 
         # Swap internal state
         self.labels[i], self.labels[j] = label_j, label_i
-        self.elements[i], self.elements[j] = self.elements[j], self.elements[i]
+        self.elements[i - 1], self.elements[j - 1] = (
+            self.elements[j - 1],
+            self.elements[i - 1],
+        )
 
         return AnimationGroup(anim_i, anim_j)
 
