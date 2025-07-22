@@ -7,8 +7,8 @@ class FlowGroup(VGroup):
     _total_count = 0
     _instance_counts = {}
 
-    def __init__(self, *vmobjects, **kwargs):
-        super().__init__(*vmobjects, **kwargs)
+    def __init__(self):
+        super().__init__()
 
         # Track which numbered instance this object is
         self.instance_index = self._assign_instance_index()
