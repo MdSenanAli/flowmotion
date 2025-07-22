@@ -93,6 +93,14 @@ class FlowArray(FlowGroup):
 
         return AnimationGroup(anim_i, anim_j)
 
+    def at(self, index):
+        """
+        Enables array-style access to logical values.
+        """
+        if not (0 <= index < len(self.elements)):
+            raise IndexError("Index out of range for update()")
+        return self.elements[index]
+
     # Python Protocol Methods
 
     def __len__(self):
@@ -111,6 +119,4 @@ class FlowArray(FlowGroup):
         """
         Enables array-style access to logical values.
         """
-        if not (0 <= index < len(self.elements)):
-            raise IndexError("Index out of range for update()")
-        return self.elements[index]
+        return self.squares[index + 1]

@@ -36,3 +36,16 @@ class FlowGroup(VGroup):
         logger = FlowLogger()
         logger.register(self)
         return logger
+
+    def display(self, anim) -> AnimationGroup:
+        # Log and return an animation that writes (displays) the object on screen
+        self.logger.log(f"Display: {anim.__name__} animation")
+        return AnimationGroup(anim(self))
+
+    def show(self) -> AnimationGroup:
+        # Log and return an animation that writes (displays) the object on screen
+        return self.display(Write)
+
+    def hide(self) -> AnimationGroup:
+        # Log and return an animation that fades out (hides) the object from screen
+        return self.display(FadeOut)
