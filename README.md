@@ -31,6 +31,4 @@ FlowMotion helps you create beautiful, step-by-step animations of:
 ## 📦 Installation
 
 ```bash
-git clone https://github.com/MdSenanAli/flowmotion.git
-cd flowmotion
-pip install -e .
+pip install flowmotion
