@@ -3,7 +3,7 @@ from ..core import FlowGroup
 
 
 class FlowStack(FlowGroup):
-    def __init__(self, stack_height, stack_width, direction=UP):
+    def __init__(self, stack_height, stack_width, direction=UP, elem_height=None):
         """
         Initializes the FlowArray with virtual edge nodes and animatable content.
         """
@@ -14,6 +14,9 @@ class FlowStack(FlowGroup):
         self.right = None
         self.bottom = None
         self.stack = []
+        self.values = []
+        self.offset = self.direction * 0.3
+        self.elem_height = elem_height
         self._initialize_stack_mobjects()
 
     def _initialize_stack_mobjects(self):
@@ -46,10 +49,13 @@ class FlowStack(FlowGroup):
         - Animates the box sliding into its position in the stack.
         """
         self.logger.log(f"Pushing value: {value}")
+        self.values.append(value)
 
         # Compute 16:9 dimensions based on stack width
         elem_width = self.stack_width
-        elem_height = self.stack_width * 9 / 16
+        elem_height = (
+            self.elem_height if self.elem_height else self.stack_width * 9 / 16
+        )
 
         # Create visual node (rectangle + label)
         rect = Rectangle(width=elem_width, height=elem_height, stroke_width=3)
@@ -68,9 +74,35 @@ class FlowStack(FlowGroup):
 
         # Start off-screen and animate in
         self.stack.append(node)
-        offset = self.direction * 0.3
-        start = target + offset
+        start = target + self.offset
         node.move_to(start)
 
         # Returning order matters here
-        return AnimationGroup(FadeIn(node), node.animate.shift(-offset))
+        return AnimationGroup(FadeIn(node), node.animate.shift(-self.offset))
+
+    def empty(self):
+        return len(self.stack) == 0
+
+    def top(self):
+        if self.stack:
+            self.logger.log("Accessing top value")
+            return Circumscribe(self.stack[-1])
+        else:
+            self.logger.log("Accessing top value when empty")
+            return None
+
+    def pop(self):
+        if self.stack:
+            self.logger.log("Popping Element")
+            top_node = self.stack.pop()
+            offset = self.direction * top_node.height
+            anim = AnimationGroup(top_node.animate.shift(offset).set_opacity(0))
+            self.remove(top_node)
+            self.values.pop()
+            return anim
+        else:
+            self.logger.log("Popping Element when none exists")
+            return None
+
+    def top_val(self):
+        return self.values[-1]
