@@ -5,4 +5,11 @@ from .structs import FlowArray, FlowStack
 from .scenes import FlowScene
 from .texts import FlowText
 
-__all__ = ["FlowGroup", "FlowArray", "FlowStack", "FlowPointer", "FlowScene"]
+__all__ = [
+    "FlowGroup",
+    "FlowArray",
+    "FlowStack",
+    "FlowPointer",
+    "FlowScene",
+    "FlowText",
+]
