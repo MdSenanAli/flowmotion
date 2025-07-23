@@ -49,3 +49,11 @@ class FlowGroup(VGroup):
     def hide(self) -> AnimationGroup:
         # Log and return an animation that fades out (hides) the object from screen
         return self.display(FadeOut)
+
+    def choose_text_type(self, value, **kwargs):
+        if isinstance(value, (int, float)):
+            self.logger.log("Push: Detected a number")
+            return Tex(str(value), **kwargs)
+        else:
+            self.logger.log("Push: Not a number")
+            return Text(str(value), **kwargs).scale(0.7)

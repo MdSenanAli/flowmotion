@@ -20,7 +20,7 @@ class FlowArray(FlowGroup):
         If marked as an edge node, it is made invisible.
         """
         square = Square(side_length=1)
-        label = Tex(str(label_val)).move_to(square.get_center())
+        label = self.choose_text_type(label_val).move_to(square.get_center())
 
         self.squares.append(square)
         self.labels.append(label)
@@ -59,7 +59,7 @@ class FlowArray(FlowGroup):
         self.logger.log(f"Updating: arr[{index}] = {new_value}")
 
         old_label = self.labels[index + self.extend_scope]
-        new_label = Tex(str(new_value)).move_to(old_label.get_center())
+        new_label = self.choose_text_type(new_value).move_to(old_label.get_center())
 
         # Update internal state
         self.labels[index + self.extend_scope] = new_label

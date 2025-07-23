@@ -60,7 +60,8 @@ class FlowStack(FlowGroup):
         # Create visual node (rectangle + label)
         rect = Rectangle(width=elem_width, height=elem_height, stroke_width=3)
         rect.rotate(angle_between_vectors(UP, self.direction))
-        label = Tex(str(value)).scale(0.6).move_to(rect.get_center())
+
+        label = self.choose_text_type(value).scale(0.6).move_to(rect.get_center())
 
         # Add Node
         node = VGroup(rect, label)
