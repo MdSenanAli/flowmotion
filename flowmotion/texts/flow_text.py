@@ -85,7 +85,7 @@ class FlowText:
         return (
             MarkupText(full_markup, font=self.font, font_size=font_size)
             .to_corner(UL, buff=0.5)
-            .shift(DOWN * 0.35)
+            .shift(DOWN * 0.325)
         )
 
     def _create_chunks(self, function: str):
@@ -125,7 +125,7 @@ class FlowText:
     def _animate_chunk(self, markup_chunk):
         return (
             AnimationGroup(
-                AddTextLetterByLetter(markup_chunk, time_per_char=0.02),
+                AddTextLetterByLetter(markup_chunk, time_per_char=0.01),
             ),
             AnimationGroup(FadeOut(markup_chunk)),
         )

@@ -49,3 +49,19 @@ class FlowScene(Scene):
             title_text.move_to(self.ribbon).scale_to_fit_height(0.125)
             self.title = title_text
             self.add(self.title)
+
+    def flow(self, *animations, **kwargs):
+        """
+        Wrapper around scene.play that:
+        - Filters out None animations
+        - Passes through *args and **kwargs
+        - Skips calling play if no valid animations remain
+
+        Parameters:
+        - scene (Scene): The active Manim Scene instance.
+        - animations: One or more animations (can be None).
+        - kwargs: Optional keyword args (e.g., run_time, rate_func) for scene.play().
+        """
+        valid_anims = [anim for anim in animations if anim is not None]
+        if valid_anims:
+            self.play(*valid_anims, **kwargs)
