@@ -1,9 +1,9 @@
-print("FlowMotion v0.1.0\n")
+print("FlowMotion v0.1.1\n")
 
 from .core import FlowGroup, FlowPointer
 from .structs import FlowArray, FlowStack
 from .scenes import FlowScene
-from .texts import FlowText
+from .blocks import FlowDocument, FlowText, FlowCode
 
 __all__ = [
     "FlowGroup",
@@ -11,5 +11,8 @@ __all__ = [
     "FlowStack",
     "FlowPointer",
     "FlowScene",
+    # Blocks
+    "FlowDocument",
     "FlowText",
+    "FlowCode",
 ]

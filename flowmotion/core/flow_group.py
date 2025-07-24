@@ -1,8 +1,9 @@
 from manim import *
+from .flow_motion import FlowMotion
 from ..logger import FlowLogger
 
 
-class FlowGroup(VGroup):
+class FlowGroup(FlowMotion, VGroup):
     # Class-level counters to track total and per-class instances
     _total_count = 0
     _instance_counts = {}
