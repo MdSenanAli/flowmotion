@@ -1,11 +1,11 @@
-from manim import MarkupText
-from manim import UP, DOWN, LEFT, RIGHT, UL, UR, DR, DL
+from manim import *
 
-from ..core.flow_motion import FlowMotion
+from ..core.flow_group import FlowGroup
 from .formatter import FlowFormatter
+from .markup import FlowMarkup
 
 
-class FlowBlock(FlowMotion):
+class FlowBlock(FlowGroup):
     """
     Base class for rendering file-based text or code blocks in flowmotion.
 
@@ -13,7 +13,7 @@ class FlowBlock(FlowMotion):
     """
 
     def __init__(
-        self, filepath, font="JetBrains Mono", font_size=18, is_code=False, max_lines=21
+        self, filepath, font="JetBrains Mono", font_size=18, max_lines=21, is_code=False
     ):
         """
         Initialize a FlowBlock.
@@ -29,8 +29,8 @@ class FlowBlock(FlowMotion):
         self.filepath = filepath
         self.font = font
         self.font_size = font_size
-        self.is_code = is_code
         self.max_lines = max_lines
+        self.is_code = is_code
 
         self.formatter = FlowFormatter(is_code)
         self.content = self.read(filepath)
@@ -38,7 +38,7 @@ class FlowBlock(FlowMotion):
         self.highlighted_lines = self.formatter.highlight_lines(self.content)
 
         self.chunks = self.break_lines(self.highlighted_lines, self.max_lines)
-        self.markup = self.markup_list(self.chunks)
+        self.markups = self.markup_list(self.chunks)
 
     def read(self, filepath):
         """
@@ -51,16 +51,7 @@ class FlowBlock(FlowMotion):
             str: File content as a string.
         """
         with open(filepath, "r") as file:
-            return file.read()
-
-    def get(self):
-        """
-        Get the full highlighted text block.
-
-        Returns:
-            str: Highlighted lines joined into one string.
-        """
-        return "\n".join(self.highlighted_lines)
+            return file.read().strip()
 
     def break_lines(self, lines: list, max_lines=21):
         """
@@ -87,11 +78,9 @@ class FlowBlock(FlowMotion):
         Returns:
             MarkupText: Positioned and styled Manim text object.
         """
-        return (
-            MarkupText(text=chunk, font=self.font, font_size=self.font_size)
-            .to_corner(UL, buff=0.5)
-            .shift(DOWN * 0.325)
-        )
+        markup_chunk = FlowMarkup(chunk)
+        self.add(markup_chunk)
+        return markup_chunk
 
     def markup_list(self, chunks):
         """
@@ -106,21 +95,9 @@ class FlowBlock(FlowMotion):
         return [self.markup(chunk) for chunk in chunks]
 
     def __iter__(self):
-        """Enable iteration over markup chunks."""
-        return iter(self.markup)
+        """Yield FlowMarkup objects directly (let external logic decide play/add)."""
+        return iter(self.markups)
 
     def __len__(self):
         """Return number of markup chunks."""
-        return len(self.markup)
-
-    def __getitem__(self, index):
-        """
-        Access a specific markup chunk.
-
-        Args:
-            index (int): Chunk index.
-
-        Returns:
-            MarkupText: The corresponding markup object.
-        """
-        return self.markup[index]
+        return len(self.markups)

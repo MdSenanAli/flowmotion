@@ -3,12 +3,10 @@ from .flow_block import FlowBlock
 
 class FlowText(FlowBlock):
     """
-    Block for displaying plain text with line numbers in flowmotion.
-
-    Inherits from FlowBlock with is_code set to False.
+    Block for displaying plain text with line numbers.
     """
 
-    def __init__(self, filepath, font="JetBrains Mono", font_size=18):
+    def __init__(self, filepath, font="JetBrains Mono", font_size=18, max_lines=21):
         """
         Initialize a FlowText block.
 
@@ -16,5 +14,6 @@ class FlowText(FlowBlock):
             filepath (str): Path to the text file.
             font (str): Font used for rendering (default: JetBrains Mono).
             font_size (int): Font size in px (default: 18).
+            max_lines (int): Max lines per rendered chunk (default: 21).
         """
-        super().__init__(filepath, font, font_size, False)
+        super().__init__(filepath, font, font_size, max_lines, False)

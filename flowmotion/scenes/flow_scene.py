@@ -1,18 +1,25 @@
 from manim import *
+from ..core.flow_motion import FlowMotion
 
 
-class FlowScene(Scene):
+class FlowScene(FlowMotion, Scene):
+    """
+    Custom scene with a ribbon header, hamburger icon, and title support.
+    """
+
     def __init__(self, **kwargs):
-        self.ribbon_color = "#121212"
+        # Configure global settings
         config.background_color = "#181818"
         config.pixel_width = 1920
         config.pixel_height = 1080
         config.verbosity = "ERROR"
         config.progress_bar = "none"
 
-        super().__init__(**kwargs)
+        FlowMotion.__init__(self)
+        Scene.__init__(self, **kwargs)
 
         self.ribbon = None
+        self.ribbon_color = "#121212"
         self.hamburger = None
         self.title = None
 
@@ -22,6 +29,9 @@ class FlowScene(Scene):
         self.hamburger = self.add_hamburger()
 
     def add_ribbon(self):
+        """
+        Create and add the top ribbon bar.
+        """
         width = config.frame_width
         ribbon = Rectangle(
             width=width, height=0.5, color=self.ribbon_color, fill_opacity=1
@@ -31,6 +41,9 @@ class FlowScene(Scene):
         return ribbon
 
     def add_hamburger(self):
+        """
+        Create and add colored control dots (like a Mac window).
+        """
         group = VGroup()
         for _, color in self.colors.items():
             circle = Circle(radius=0.06, color=color, fill_opacity=1)
@@ -44,6 +57,13 @@ class FlowScene(Scene):
     def add_title(
         self, title="Sample Video Preview Title", custom_font="JetBrains Mono"
     ):
+        """
+        Add a title to the ribbon.
+
+        Args:
+            title (str): Title text.
+            custom_font (str): Font to use (default: JetBrains Mono).
+        """
         if self.ribbon:
             title_text = Text(rf"{title.upper()}", font=custom_font, color="#DFDCD3")
             title_text.move_to(self.ribbon).scale_to_fit_height(0.125)
@@ -52,22 +72,38 @@ class FlowScene(Scene):
 
     def flow(self, *args, **kwargs):
         """
-        Smart wrapper around scene.play that:
-        - Plays animations (Animation instances)
-        - Adds Mobjects (Mobject instances)
-        - Skips None
-        - Raises error for unsupported types
+        Accepts tuples of (Action, target) and performs the appropriate behavior.
 
-        Parameters:
-        - args: Mix of Animation, Mobject, or None
-        - kwargs: Passed to self.play() if Animation is invoked
+        - (SKIP, _) => skips
+        - (PLAY, Animation) => self.play()
+        - (ADD, Mobject) => self.add()
+        - (REMOVE, Mobject) => self.remove()
         """
         for item in args:
-            if item is None:
+            if not isinstance(item, tuple) or len(item) != 2:
+                raise TypeError(
+                    f"Each item must be a (Action, target) tuple, got: {item}"
+                )
+
+            action, target = item
+
+            # Handle SKIP
+            if action == self.FlowAction.SKIP:
                 continue
-            elif isinstance(item, Animation):
-                self.play(item, **kwargs)
-            elif isinstance(item, Mobject):
-                self.add(item)
+
+            # PLAY: animation
+            elif action == self.FlowAction.PLAY:
+                if not isinstance(target, Animation):
+                    raise TypeError(f"Expected Animation for PLAY, got {type(target)}")
+                self.play(target, **kwargs)
+
+            # ADD: mobject
+            elif action == self.FlowAction.ADD:
+                self.add(target)
+
+            # REMOVE: mobject
+            elif action == self.FlowAction.REMOVE:
+                self.remove(target)
+
             else:
-                raise TypeError(f"Unsupported type passed to flow: {type(item)}")
+                raise ValueError(f"Unknown action: {action}")
