@@ -5,6 +5,21 @@ from datetime import datetime
 class FlowMotion:
     _log_file_path = "flowmotion.log"
 
+    def __init__(self):
+        self.mute_animation = False
+
+    def is_mute(self):
+        return self.mute_animation
+
+    def unmute(self):
+        self.mute_animation = True
+        return
+
+    @property
+    def mute(self):
+        self.mute_animation = True
+        return self
+
     @classmethod
     def log(cls, message: str):
         """
