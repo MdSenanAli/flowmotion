@@ -50,18 +50,24 @@ class FlowScene(Scene):
             self.title = title_text
             self.add(self.title)
 
-    def flow(self, *animations, **kwargs):
+    def flow(self, *args, **kwargs):
         """
-        Wrapper around scene.play that:
-        - Filters out None animations
-        - Passes through *args and **kwargs
-        - Skips calling play if no valid animations remain
+        Smart wrapper around scene.play that:
+        - Plays animations (Animation instances)
+        - Adds Mobjects (Mobject instances)
+        - Skips None
+        - Raises error for unsupported types
 
         Parameters:
-        - scene (Scene): The active Manim Scene instance.
-        - animations: One or more animations (can be None).
-        - kwargs: Optional keyword args (e.g., run_time, rate_func) for scene.play().
+        - args: Mix of Animation, Mobject, or None
+        - kwargs: Passed to self.play() if Animation is invoked
         """
-        valid_anims = [anim for anim in animations if anim is not None]
-        if valid_anims:
-            self.play(*valid_anims, **kwargs)
+        for item in args:
+            if item is None:
+                continue
+            elif isinstance(item, Animation):
+                self.play(item, **kwargs)
+            elif isinstance(item, Mobject):
+                self.add(item)
+            else:
+                raise TypeError(f"Unsupported type passed to flow: {type(item)}")
