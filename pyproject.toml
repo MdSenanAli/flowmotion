@@ -1,6 +1,6 @@
 [project]
 name = "flowmotion"
-version = "0.1.3"
+version = "0.2.0"
 description = "A Manim-based animation library for visualizing data structures and algorithms."
 authors = [{ name = "Mohammad Senan Ali" }]
 readme = "README.md"
