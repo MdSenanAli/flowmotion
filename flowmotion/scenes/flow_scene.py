@@ -70,6 +70,31 @@ class FlowScene(FlowMotion, Scene):
             self.title = title_text
             self.add(self.title)
 
+    def create_intro(self):
+        lines = [
+            "> Initializing system memory... OK",
+            "> Loading SenanOS v0.1.12... Done",
+            "> Mounting workspace: /home/senan/youtube... OK",
+            "> Launching Production Shell...",
+            "> Welcome back, senan",
+            "> _",
+        ]
+        group = VGroup()
+        for line in lines:
+            text_obj = Text(
+                line,
+                color=GREEN,
+                font="JetBrains Mono",
+                font_size=18,
+            )
+            group.add(text_obj)
+
+        group.arrange(DOWN, aligned_edge=LEFT, buff=0.2).to_corner(UL).shift(
+            DOWN * 0.325
+        )
+        anim = [AddTextLetterByLetter(mobj, time_per_char=0.01) for mobj in group]
+        return (self.FlowAction.PLAY, Succession(*anim))
+
     def flow(self, *args, **kwargs):
         """
         Accepts tuples of (Action, target) and performs the appropriate behavior.
