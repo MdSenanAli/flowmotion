@@ -18,57 +18,32 @@ class FlowScene(FlowMotion, Scene):
         FlowMotion.__init__(self)
         Scene.__init__(self, **kwargs)
 
-        self.ribbon = None
-        self.ribbon_color = "#121212"
-        self.hamburger = None
-        self.title = None
-
-        self.colors = {"RED": "#FF5F56", "YELLOW": "#FFBD2E", "GREEN": "#27C93F"}
-
-        self.ribbon = self.add_ribbon()
-        self.hamburger = self.add_hamburger()
-
-    def add_ribbon(self):
-        """
-        Create and add the top ribbon bar.
-        """
-        width = config.frame_width
-        ribbon = Rectangle(
-            width=width, height=0.5, color=self.ribbon_color, fill_opacity=1
-        )
-        ribbon.shift(UP * (config.frame_height / 2 - ribbon.height / 2))
-        self.add(ribbon)
-        return ribbon
-
-    def add_hamburger(self):
-        """
-        Create and add colored control dots (like a Mac window).
-        """
-        group = VGroup()
-        for _, color in self.colors.items():
-            circle = Circle(radius=0.06, color=color, fill_opacity=1)
-            group.add(circle)
-
-        group.arrange(RIGHT, buff=0.175)
-        group.to_corner(UL, buff=0.2).shift(RIGHT * 0.1)
-        self.add(group)
-        return group
-
-    def add_title(
-        self, title="Sample Video Preview Title", custom_font="JetBrains Mono"
+    def init_terminal_theme(
+        self, title="Default Terminal Title", direction=LEFT, font="JetBrains Mono"
     ):
-        """
-        Add a title to the ribbon.
+        bar_color = "#121212"
+        bar = Rectangle(
+            width=config.frame_width, height=0.5, color=bar_color, fill_opacity=1
+        )
+        bar.shift(UP * (config.frame_height - bar.height) / 2)
 
-        Args:
-            title (str): Title text.
-            custom_font (str): Font to use (default: JetBrains Mono).
-        """
-        if self.ribbon:
-            title_text = Text(rf"{title.upper()}", font=custom_font, color="#DFDCD3")
-            title_text.move_to(self.ribbon).scale_to_fit_height(0.125)
-            self.title = title_text
-            self.add(self.title)
+        ctrl_button_colors = ["#FF5F56", "#FFBD2E", "#27C93F"]  # Red, Yellow, Green
+        buttons = VGroup()
+
+        for button_color in ctrl_button_colors:
+            circle = Circle(radius=0.06, color=button_color, fill_opacity=1)
+            buttons.add(circle)
+
+        buttons.arrange(-direction, buff=0.175)
+        buttons.move_to(
+            bar.get_edge_center(direction) - direction * buttons.width * 0.8
+        )
+
+        title_text = Text(rf"{title.upper()}", font=font, color="#DFDCD3")
+        title_text.move_to(bar).scale_to_fit_height(0.125)
+
+        terminal_group = VGroup(bar, buttons, title_text)
+        return (self.FlowAction.ADD, terminal_group)
 
     def create_intro(self):
         lines = [
