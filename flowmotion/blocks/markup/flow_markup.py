@@ -28,7 +28,7 @@ class FlowMarkup(FlowGroup):
         self.markup = (
             MarkupText(text=self.text, font=self.font, font_size=self.font_size)
             .to_corner(UL, buff=0.5)
-            .shift(DOWN * 0.325)
+            .shift(DOWN * 0.325 + LEFT * 0.2)
         )
 
         self.add(self.markup)
