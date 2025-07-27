@@ -1,3 +1,4 @@
+import os
 from manim import *
 
 from ..core.flow_group import FlowGroup
@@ -32,6 +33,7 @@ class FlowBlock(FlowGroup):
         self.max_lines = max_lines
         self.is_code = is_code
 
+        self.filename = os.path.basename(self.filepath)
         self.formatter = FlowFormatter(is_code)
         self.content = self.read(filepath)
 
@@ -50,6 +52,7 @@ class FlowBlock(FlowGroup):
         Returns:
             str: File content as a string.
         """
+        self.logger.info(f"[{self.__class__.__name__}][READING] {self.filename}")
         with open(filepath, "r") as file:
             return file.read().strip()
 
@@ -64,6 +67,7 @@ class FlowBlock(FlowGroup):
         Returns:
             list: List of line chunks.
         """
+        self.logger.info(f"[{self.__class__.__name__}][BREAKING] {self.filename}")
         return [
             "\n".join(lines[i : i + max_lines]) for i in range(0, len(lines), max_lines)
         ]
@@ -92,6 +96,10 @@ class FlowBlock(FlowGroup):
         Returns:
             list: List of MarkupText objects.
         """
+
+        self.logger.info(
+            f"[{self.__class__.__name__}][CHUNKS] {self.filename} = {len(chunks)}"
+        )
         return [self.markup(chunk) for chunk in chunks]
 
     def __iter__(self):

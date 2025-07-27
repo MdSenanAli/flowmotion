@@ -18,6 +18,8 @@ class FlowScene(FlowMotion, Scene):
         FlowMotion.__init__(self)
         Scene.__init__(self, **kwargs)
 
+        self.logger.info(f"[{self.__class__.__name__}] Initializing Scene")
+
     def init_terminal_theme(
         self, title="Default Terminal Title", direction=LEFT, font="JetBrains Mono"
     ):

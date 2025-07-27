@@ -1,4 +1,4 @@
-from datetime import datetime
+import logging
 from enum import Enum
 
 
@@ -13,18 +13,5 @@ class FlowMotion:
         SKIP = "SKIP"
         REMOVE = "REMOVE"
 
-    _log_file_path = "flowmotion.log"
-
-    @classmethod
-    def log(cls, message: str):
-        """
-        Log a message with timestamp and class name to the flowmotion log file.
-
-        Args:
-            message (str): The message to log.
-        """
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        log_line = f"[{timestamp}] [{cls.__name__}] {message}"
-
-        with open(cls._log_file_path, "a") as f:
-            f.write(log_line + "\n")
+    def __init__(self):
+        self.logger = logging.getLogger(f"flowmotion.{self.__class__.__name__}")
