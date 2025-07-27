@@ -45,20 +45,42 @@ class FlowScene(FlowMotion, Scene):
         terminal_group = VGroup(bar, buttons, title_text)
         return (self.FlowAction.ADD, terminal_group)
 
-    def create_intro(self):
+    def init_intro(self, name: str, video_title=None):
+        """
+        Generates a list of boot-up style terminal lines for an animated intro.
+
+        Args:
+            name (str): The user's name, used to personalize OS and welcome message.
+            video_title (str, optional): Title of the video being initialized. Used to simulate loading a video file.
+
+        Returns:
+            list[str]: A list of formatted strings representing the terminal intro lines.
+        """
+
+        # Simulate system and OS loading steps
         lines = [
             "> Initializing system memory... OK",
-            "> Loading SenanOS v0.1.12... Done",
-            "> Mounting workspace: /home/senan/youtube... OK",
+            f"> Loading {name.title().replace(' ', '')}OS v0.1.1... Done",
+            f"> Mounting workspace: /home/senan/youtube... OK",
+        ]
+
+        # If a video title is provided, format it as a .mp4 filename and include it
+        if video_title:
+            video_filename = video_title.lower().replace(" ", "-") + ".mp4"
+            lines.append(f"> Initializing video: {video_filename}... OK")
+
+        # Continue with shell launch and personalized welcome message
+        lines += [
             "> Launching Production Shell...",
-            "> Welcome back, senan",
+            f"> Welcome back, {name.lower().replace(' ', '-')}",
             "> _",
         ]
+
         group = VGroup()
         for line in lines:
             text_obj = Text(
                 line,
-                color=GREEN,
+                color="#a6e22e",
                 font="JetBrains Mono",
                 font_size=18,
             )
@@ -68,7 +90,7 @@ class FlowScene(FlowMotion, Scene):
             DOWN * 0.325
         )
         anim = [AddTextLetterByLetter(mobj, time_per_char=0.01) for mobj in group]
-        return (self.FlowAction.PLAY, Succession(*anim))
+        return (self.FlowAction.PLAY, Succession(*anim, Wait(1.5), FadeOut(group)))
 
     def flow(self, *args, **kwargs):
         """
