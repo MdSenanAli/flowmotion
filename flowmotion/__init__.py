@@ -1,5 +1,3 @@
-print("FlowMotion v0.1.3\n")
-
 from .core import FlowGroup, FlowPointer
 from .blocks import FlowBlock, FlowCode, FlowText
 from .structs import FlowArray, FlowStack
@@ -16,3 +14,6 @@ __all__ = [
     "FlowCode",
     "FlowText",
 ]
+
+__version__ = "0.2.0"
+print(f"FlowMotion v{__version__}\n")
