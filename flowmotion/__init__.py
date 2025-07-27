@@ -15,5 +15,5 @@ __all__ = [
     "FlowText",
 ]
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 print(f"FlowMotion v{__version__}\n")
