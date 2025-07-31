@@ -1,3 +1,4 @@
+import textwrap
 from manim import *
 from ..core.flow_motion import FlowMotion
 
@@ -19,6 +20,37 @@ class FlowScene(FlowMotion, Scene):
         Scene.__init__(self, **kwargs)
 
         self.logger.info(f"[{self.__class__.__name__}] Initializing Scene")
+
+    def disclaimer(self):
+        # Title
+        title = Tex(r"\textbf{Disclaimer}", font_size=72, color=TEAL)
+
+        # Body lines as a list of Tex objects
+        disclaimer_lines = [
+            r"-" * 32,
+            r"These coding animations are made with care, but small errors",
+            r"might still slip in --- feel free to point them out in the comments.",
+            r"Programming is more about \textbf{thinking} than typing. I'll show",
+            r"each solution in multiple languages so you can see how different",
+            r"tools tackle the same problem.",
+            r"- \textit{Senan}",
+        ]
+
+        # Turn the lines into a vertically stacked VGroup
+        body = (
+            VGroup(
+                title,
+                *[
+                    Tex(line, font_size=36)
+                    for line in disclaimer_lines
+                    if line.strip() != ""
+                ],
+            )
+            .arrange(DOWN, aligned_edge=LEFT, buff=0.2)
+            .to_edge(LEFT)
+        )
+        body.shift(RIGHT)
+        return body
 
     def init_terminal_theme(
         self, title="Default Terminal Title", direction=LEFT, font="JetBrains Mono"

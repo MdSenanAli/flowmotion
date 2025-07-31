@@ -3,7 +3,7 @@ from manim import *
 from .flow_motion import FlowMotion
 
 
-class FlowGroup(FlowMotion, VGroup):
+class FlowGroup(VGroup, FlowMotion):
     """
     Group container for flowmotion objects with playback control.
 
@@ -14,8 +14,7 @@ class FlowGroup(FlowMotion, VGroup):
         """
         Initialize an empty FlowGroup.
         """
-        FlowMotion.__init__(self)
-        VGroup.__init__(self)
+        super().__init__()
 
     def choose_text_type(self, value, **kwargs):
         """
@@ -46,6 +45,7 @@ class FlowGroup(FlowMotion, VGroup):
         if mute:
             return (self.FlowAction.ADD, self)
         else:
+            print(self.__class__.__name__)
             return (self.FlowAction.PLAY, Write(self))
 
     def hide(self, mute=False):

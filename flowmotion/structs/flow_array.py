@@ -103,7 +103,7 @@ class FlowArray(FlowGroup):
 
         return action
 
-    def update(self, i, new_value, mute=False):
+    def update_value(self, i, new_value, mute=False):
         """
         Updates the label and stored value of the element at the given index.
 
