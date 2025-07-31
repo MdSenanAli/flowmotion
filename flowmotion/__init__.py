@@ -4,7 +4,7 @@ FlowMotion Library
 A lightweight animation framework built on top of Manim for visualizing algorithms and data flow.
 """
 
-__version__ = "0.2.4"
+__version__ = "0.2.5"
 
 import logging
 from rich.logging import RichHandler
